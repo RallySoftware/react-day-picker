@@ -988,6 +988,20 @@ describe("DayPicker", () => {
 
     });
 
+    it("focuses the last day of the previous month when a leapday", () => {
+      dayPickerEl = TestUtils.renderIntoDocument(
+        <DayPicker initialMonth={new Date(2016, 2)} />
+      );
+      body = ReactDOM.findDOMNode(TestUtils.findRenderedDOMComponentWithClass(dayPickerEl, "DayPicker-Body"));
+      const focusedNode = getDayNode(body, 0, 2);
+      expect(focusedNode.innerHTML).to.equal("1");
+
+      dayPickerEl.focusPreviousDay(focusedNode);
+      expect(document.activeElement.innerHTML).to.equal("29");
+
+      expect(dayPickerEl.state.currentMonth.getMonth()).to.equal(1);
+    });
+
     it("focuses the next day of the same month", () => {
       const focusedNode = getDayNode(body, 0, 2);
       const nextNode = getDayNode(body, 0, 3);
@@ -1020,6 +1034,19 @@ describe("DayPicker", () => {
 
       expect(dayPickerEl.state.currentMonth.getMonth()).to.equal(6);
 
+    });
+
+    it("focuses the first day of the next month after leapday", () => {
+      dayPickerEl = TestUtils.renderIntoDocument(
+        <DayPicker initialMonth={new Date(2016, 1)} />
+      );
+      body = ReactDOM.findDOMNode(TestUtils.findRenderedDOMComponentWithClass(dayPickerEl, "DayPicker-Body"));
+      const focusedNode = getDayNode(body, 4, 1);
+      expect(focusedNode.innerHTML).to.equal("29");
+
+      dayPickerEl.focusNextDay(focusedNode);
+      expect(document.activeElement.innerHTML).to.equal("1");
+      expect(dayPickerEl.state.currentMonth.getMonth()).to.equal(2);
     });
 
   });
